@@ -79,20 +79,42 @@ Object Search(int productChoice)
 {
     if (productChoice == 0)
     {
-        Console.WriteLine("Inserire il nome del dvd");
-        string searchedDvd = Console.ReadLine();
+        Console.WriteLine("Effettuare la ricerca sul titolo(0) o sul codice?(1)");
+        int searchParameter = Convert.ToInt32(Console.ReadLine());
 
         bool dvdFounded = false;
         Dvd chosenDvd = null;
 
-        foreach (Dvd dvd in dvds)
+        if (searchParameter == 0)
         {
-            if (dvd.Title.ToLower().Contains(searchedDvd.ToLower()))
+            Console.WriteLine("Inserire il titolo del dvd");
+            string searchedDvd = Console.ReadLine();
+
+            foreach (Dvd dvd in dvds)
             {
-                dvdFounded = true;
-                chosenDvd = dvd;
+                if (dvd.Title.ToLower().Contains(searchedDvd.ToLower()))
+                {
+                    dvdFounded = true;
+                    chosenDvd = dvd;
+                }
             }
         }
+        else
+        {
+            Console.WriteLine("Inserire il codice del dvd");
+            int searchedDvd = Convert.ToInt32(Console.ReadLine());
+
+            foreach (Dvd dvd in dvds)
+            {
+                if (dvd.Code == searchedDvd)
+                {
+                    dvdFounded = true;
+                    chosenDvd = dvd;
+                }
+            }
+        }
+
+        
 
         if (dvdFounded)
         {
@@ -105,7 +127,7 @@ Object Search(int productChoice)
             Console.WriteLine($"Disponibile: {chosenDvd.IsAvailable}");
             Console.WriteLine($"Scaffale: {chosenDvd.Shelf}");
             Console.WriteLine($"Autore: {chosenDvd.Author}");
-            Console.WriteLine($"Numero di pagine: {chosenDvd.Time}");
+            Console.WriteLine($"Durata del dvd: {chosenDvd.Time}");
 
             return chosenDvd;
         }
@@ -117,20 +139,43 @@ Object Search(int productChoice)
     }
     else
     {
-        Console.WriteLine("Inserire il nome del libro");
-        string searchedBook = Console.ReadLine();
+
+        Console.WriteLine("Effettuare la ricerca sul titolo(0) o sul codice?(1)");
+        int searchParameter = Convert.ToInt32(Console.ReadLine());
 
         bool bookFounded = false;
         Book chosenBook = null;
 
-        foreach (Book book in books)
+        if (searchParameter == 0)
         {
-            if (book.Title.ToLower().Contains(searchedBook.ToLower()))
+            Console.WriteLine("Inserire il titolo del libro");
+            string searchedBook = Console.ReadLine();
+
+            foreach (Book book in books)
             {
-                bookFounded = true;
-                chosenBook = book;
+                if (book.Title.ToLower().Contains(searchedBook.ToLower()))
+                {
+                    bookFounded = true;
+                    chosenBook = book;
+                }
             }
         }
+        else
+        {
+            Console.WriteLine("Inserire il codice del libro");
+            int searchedBook = Convert.ToInt32(Console.ReadLine());
+
+            foreach (Book book in books)
+            {
+                if (book.Code == searchedBook)
+                {
+                    bookFounded = true;
+                    chosenBook = book;
+                }
+            }
+        }
+
+        
 
         if (bookFounded)
         {
