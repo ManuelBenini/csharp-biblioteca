@@ -25,6 +25,21 @@ List<Dvd> dvds = new List<Dvd>
     new Dvd(1111, "Jordie", 2019, "Storytelling", false, "ERB", "De Andrè", 110),
 };
 
+List<Loan> loans = new List<Loan>
+{
+    new Loan(users[0], "20/09/2022", "27/09/2022"),
+    new Loan(users[0], "23/09/2022", "31/10/2022"),
+    new Loan(users[1], "20/09/2022", "27/09/2022"),
+    new Loan(users[2], "23/09/2022", "31/10/2022"),
+    new Loan(users[3], "23/09/2022", "31/10/2022"),
+};
+
+loans[0].Book = books[0];
+loans[1].Dvd = dvds[1];
+loans[2].Dvd = dvds[3];
+loans[3].Book = books[2];
+loans[4].Book = books[1];
+
 Menu:
 
 Console.WriteLine("Salve! Vuole effettuare una ricerca(0) , registrarsi?(1) o effettuare il login(2)");
@@ -32,7 +47,7 @@ int choice = Convert.ToInt32(Console.ReadLine());
 
 if(choice == 0)
 {
-    Console.WriteLine("Vuole cercare un dvd(0) o un libro?(1)");
+    Console.WriteLine("Vuole cercare un dvd(0), un libro?(1) oppure i prestiti di un utente?(2)");
     int productChoice = Convert.ToInt32(Console.ReadLine());
 
     Search(productChoice);
@@ -77,6 +92,7 @@ else
 
 Object Search(int productChoice)
 {
+    //RICERCA DVD
     if (productChoice == 0)
     {
         Console.WriteLine("Effettuare la ricerca sul titolo(0) o sul codice?(1)");
@@ -137,7 +153,8 @@ Object Search(int productChoice)
             return chosenDvd;
         }
     }
-    else
+    //RICERCA LIBRI
+    else if(productChoice == 1)
     {
 
         Console.WriteLine("Effettuare la ricerca sul titolo(0) o sul codice?(1)");
@@ -175,8 +192,6 @@ Object Search(int productChoice)
             }
         }
 
-        
-
         if (bookFounded)
         {
             Console.WriteLine("Libro trovato, ecco i suoi dettagli: ");
@@ -198,12 +213,60 @@ Object Search(int productChoice)
             return chosenBook;
         }
     }
+    //RICERCA PRENOTAZIONI
+    else
+    {
+        Console.WriteLine("Inserire nome utente");
+        string searchedUserName = Console.ReadLine();
+
+        Console.WriteLine("Inserire cognome utente");
+        string searchedUserSurname = Console.ReadLine();
+
+        bool userFounded = false;
+        List<Loan> userLoans = new List<Loan>();
+
+        foreach (Loan loan in loans)
+        {
+            if (loan.User.Name.ToLower().Contains(searchedUserName.ToLower()))
+            {
+                if (loan.User.Surname.ToLower().Contains(searchedUserSurname.ToLower()))
+                {
+                    userFounded = true;
+                    userLoans.Add(loan);
+                }
+            }
+        }
+        if(userLoans.Count > 0)
+        {
+            Console.WriteLine($"Utente: {userLoans[0].User.Name} {userLoans[0].User.Surname}");
+            foreach (Loan loan in userLoans)
+            {
+                if(loan.Dvd != null)
+                {
+                    Console.WriteLine($"Dvd: {loan.Dvd.Title}");
+                }
+                else
+                {
+                    Console.WriteLine($"Libro: {loan.Book.Title}");
+                }
+                Console.WriteLine($"Dal: {loan.LoanStart}");
+                Console.WriteLine($"al: {loan.LoanEnd}");
+            }
+            return userLoans[0];
+        }
+        else
+        {
+            Console.WriteLine("L'utente non ha nessun prestito.");
+            Loan loan = new Loan();
+            return loan;
+        }
+    }
 }
 
 User Registration()
 {
     int userDataAccepted = 0;
-    User registedUser = new User();
+    User registedUser;
     do
     {
         Console.WriteLine("Inserire cognome");
