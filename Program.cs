@@ -330,7 +330,7 @@ User Login()
     else
     {
         Console.WriteLine("Utente non trovato");
-        return chosenUser;
+        return null;
     }
 }
 
