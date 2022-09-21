@@ -38,7 +38,8 @@ loans[0].Book = books[0];
 loans[1].Dvd = dvds[1];
 loans[2].Dvd = dvds[3];
 loans[3].Book = books[2];
-loans[4].Book = books[1];
+
+Console.WriteLine(typeof(Dvd));
 
 Menu:
 
@@ -66,19 +67,19 @@ else if(choice == 1)
    Console.WriteLine($"Salve {user.Name} {user.Surname}! Che cosa vuole prenotare? Dvd(0) Libro(1)");
    int productChoice = Convert.ToInt32(Console.ReadLine());
 
-    UserList(productChoice, user);
+   UserList(productChoice, user);
 
-    Console.WriteLine("Tornare al menù? Si(1) No(0)");
-    if (Convert.ToInt32(Console.ReadLine()) == 1)
-    {
-        goto Menu;
-    }
+   Console.WriteLine("Tornare al menù? Si(1) No(0)");
+   if (Convert.ToInt32(Console.ReadLine()) == 1)
+   {
+       goto Menu;
+   }
 }
 else
 {
     User user = Login();
 
-    Console.WriteLine($"Salve {user.Name} {user.Surname}! Che cosa vuole prenotare? Dvd(0) Libro(1)");
+    Console.WriteLine($"Salve {user.Name} {user.Surname}! Vuole prenotare? Dvd(0) Libro(1) || Lista prenotazioni(2)");
     int productChoice = Convert.ToInt32(Console.ReadLine());
 
     UserList(productChoice, user);
@@ -353,18 +354,15 @@ void UserList(int productChoice, User user)
                 if (isUserBooking == 1)
                 {
                     chosenDvd.IsAvailable = false;
-                    user.DvdPush(chosenDvd);
+                    loans.Add(new Loan(user, DateTime.Now.ToString(), DateTime.Now.AddDays(7).ToString()));
+                    loans[loans.Count - 1].Dvd = chosenDvd;
 
                     Console.WriteLine($"la prenotazione del Dvd {chosenDvd.Title} è avvenuta con successo! Visualizzare la lista dei propri Dvd? Si(1) No(0)");
                     int toList = Convert.ToInt32(Console.ReadLine());
 
                     if (toList == 1)
                     {
-                        Console.WriteLine("Ecco la lista dei Dvd da lei prenotati: ");
-                        foreach (Dvd dvd in user.getDvds())
-                        {
-                            Console.WriteLine(dvd.Title);
-                        }
+                        GetLoans(user, "dvd");
                     }
                 }
             }
@@ -374,7 +372,7 @@ void UserList(int productChoice, User user)
             }
         }
     }
-    else
+    else if(productChoice == 1)
     {
         Book chosenBook = (Book)Search(productChoice);
 
@@ -388,18 +386,15 @@ void UserList(int productChoice, User user)
                 if (isUserBooking == 1)
                 {
                     chosenBook.IsAvailable = false;
-                    user.BookPush(chosenBook);
+                    loans.Add(new Loan(user, DateTime.Now.ToString(), DateTime.Now.AddDays(7).ToString()));
+                    loans[loans.Count - 1].Book = chosenBook;
 
                     Console.WriteLine($"la prenotazione del libro {chosenBook.Title} è avvenuta con successo! Visualizzare la lista dei propri libri? Si(1) No(0)");
                     int toList = Convert.ToInt32(Console.ReadLine());
 
                     if (toList == 1)
                     {
-                        Console.WriteLine("Ecco la lista dei libri da lei prenotati: ");
-                        foreach (Book book in user.getBooks())
-                        {
-                            Console.WriteLine(book.Title);
-                        }
+                        GetLoans(user, "libri");
                     }
                 }
             }
@@ -408,7 +403,54 @@ void UserList(int productChoice, User user)
                 Console.WriteLine("Il libro non è prenotabile.");
             }
         }
-        
+
+    }
+    else
+    {
+        Console.WriteLine($"Di cosa vuole mostrare le prenotazioni? Dvd(0) Libri(1)");
+        int searchType = Convert.ToInt32(Console.ReadLine());
+
+        if(searchType == 0)
+        {
+            GetLoans(user, "dvd");
+        }
+        else
+        {
+            GetLoans(user, "libri");
+        }
+    }
+}
+
+void GetLoans(User user, string testo)
+{
+    Console.WriteLine($"Ecco la lista dei {testo} da lei prenotati: ");
+    bool LoanExist = false;
+    foreach (Loan loan in loans)
+    {
+        if (loan.User.Name == user.Name)
+        {
+            if(testo == "dvd")
+            {
+                if (loan.Dvd != null)
+                {
+                    Console.WriteLine(loan.Dvd.Title);
+                    LoanExist = true;
+                }
+            }
+            else
+            {
+                if (loan.Book != null)
+                {
+                    Console.WriteLine(loan.Book.Title);
+                    LoanExist = true;
+                }
+            }
+            
+        }
+    }
+    if (!LoanExist)
+    {
+        Console.WriteLine($"Non vi sono prenotazioni di {testo} a suo nome.");
     }
 }
 
