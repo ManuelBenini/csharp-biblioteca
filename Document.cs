@@ -1,4 +1,4 @@
-﻿public class Document
+﻿public partial class Document
 {
     //Attributes
     public int Code { get; set; }

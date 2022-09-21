@@ -1,45 +1,7 @@
 ﻿
 using System.Linq;
 
-List<User> users = new List<User>
-{
-    new User("Benini", "Manuel", "manuelbenini1905@gmail.com", "ciao19", "3913325333"),
-    new User("John", "Snow", "cicciolino@gmail.com", "beppe19", "3913325333"),
-    new User("artoris", "eleggis", "ercole@gmail.com", "nonloso", "3913325333"),
-    new User("peppe", "Gianluca", "elementare@gmail.com", "wattson", "3913325333"),
-};
-
-List<Book> books = new List<Book>
-{ 
-    new Book(5534, "Lo Hobbit", 2019, "Fantasy", true, "AB", "J.R.R Tolkien", 540),
-    new Book(2305, "Psicologo", 1980, "Drammatic", true, "CB", "Frank John", 230),
-    new Book(2312, "Chthulu", 1970, "Fantasy", false, "CS", "Lovecraft", 999),
-    new Book(4321, "Arthur", 2019, "Mitologia", false, "ERB", "Il Re", 250),
-};
-
-List<Dvd> dvds = new List<Dvd>
-{
-    new Dvd(1234, "Do You Breath?", 2019, "Rock", true, "as", "Frank Conley", 20),
-    new Dvd(5321, "Summer Vibes", 1980, "Lo-Fi", true, "CB", "Cinegar John", 60),
-    new Dvd(6742, "Worms Carves Your Mind", 1970, "Metal", false, "CS", "Lovecraft", 50),
-    new Dvd(1111, "Jordie", 2019, "Storytelling", false, "ERB", "De Andrè", 110),
-};
-
-List<Loan> loans = new List<Loan>
-{
-    new Loan(users[0], "20/09/2022", "27/09/2022"),
-    new Loan(users[0], "23/09/2022", "31/10/2022"),
-    new Loan(users[1], "20/09/2022", "27/09/2022"),
-    new Loan(users[2], "23/09/2022", "31/10/2022"),
-    new Loan(users[3], "23/09/2022", "31/10/2022"),
-};
-
-loans[0].Book = books[0];
-loans[1].Dvd = dvds[1];
-loans[2].Dvd = dvds[3];
-loans[3].Book = books[2];
-
-Console.WriteLine(typeof(Dvd));
+Library library = new Library();
 
 Menu:
 
@@ -62,12 +24,19 @@ if(choice == 0)
 else if(choice == 1)
 {
    User user = Registration();
-   users.Add(user);
+   library.UserPush(user);
 
-   Console.WriteLine($"Salve {user.Name} {user.Surname}! Che cosa vuole prenotare? Dvd(0) Libro(1)");
-   int productChoice = Convert.ToInt32(Console.ReadLine());
+    Console.WriteLine($"Salve {user.Name} {user.Surname}! Vuole prenotare? Dvd(0) Libro(1) || Lista prenotazioni(2) || Logout(3)");
+    int productChoice = Convert.ToInt32(Console.ReadLine());
 
-   UserList(productChoice, user);
+    if (productChoice != 3)
+    {
+        UserList(productChoice, user);
+    }
+    else
+    {
+        goto Menu;
+    }
 
    Console.WriteLine("Tornare al menù? Si(1) No(0)");
    if (Convert.ToInt32(Console.ReadLine()) == 1)
@@ -79,10 +48,17 @@ else
 {
     User user = Login();
 
-    Console.WriteLine($"Salve {user.Name} {user.Surname}! Vuole prenotare? Dvd(0) Libro(1) || Lista prenotazioni(2)");
+    Console.WriteLine($"Salve {user.Name} {user.Surname}! Vuole prenotare? Dvd(0) Libro(1) || Lista prenotazioni(2) || Logout(3)");
     int productChoice = Convert.ToInt32(Console.ReadLine());
 
-    UserList(productChoice, user);
+    if(productChoice != 3)
+    {
+        UserList(productChoice, user);
+    }
+    else
+    {
+        goto Menu;
+    }
 
     Console.WriteLine("Tornare al menù? Si(1) No(0)");
     if (Convert.ToInt32(Console.ReadLine()) == 1)
@@ -107,7 +83,7 @@ Object Search(int productChoice)
             Console.WriteLine("Inserire il titolo del dvd");
             string searchedDvd = Console.ReadLine();
 
-            foreach (Dvd dvd in dvds)
+            foreach (Dvd dvd in library.GetDvds())
             {
                 if (dvd.Title.ToLower().Contains(searchedDvd.ToLower()))
                 {
@@ -121,7 +97,7 @@ Object Search(int productChoice)
             Console.WriteLine("Inserire il codice del dvd");
             int searchedDvd = Convert.ToInt32(Console.ReadLine());
 
-            foreach (Dvd dvd in dvds)
+            foreach (Dvd dvd in library.GetDvds())
             {
                 if (dvd.Code == searchedDvd)
                 {
@@ -169,7 +145,7 @@ Object Search(int productChoice)
             Console.WriteLine("Inserire il titolo del libro");
             string searchedBook = Console.ReadLine();
 
-            foreach (Book book in books)
+            foreach (Book book in library.GetBooks())
             {
                 if (book.Title.ToLower().Contains(searchedBook.ToLower()))
                 {
@@ -183,7 +159,7 @@ Object Search(int productChoice)
             Console.WriteLine("Inserire il codice del libro");
             int searchedBook = Convert.ToInt32(Console.ReadLine());
 
-            foreach (Book book in books)
+            foreach (Book book in library.GetBooks())
             {
                 if (book.Code == searchedBook)
                 {
@@ -217,50 +193,42 @@ Object Search(int productChoice)
     //RICERCA PRENOTAZIONI
     else
     {
-        Console.WriteLine("Inserire nome utente");
-        string searchedUserName = Console.ReadLine();
-
         Console.WriteLine("Inserire cognome utente");
         string searchedUserSurname = Console.ReadLine();
 
-        bool userFounded = false;
-        List<Loan> userLoans = new List<Loan>();
+        Console.WriteLine("Inserire nome utente");
+        string searchedUserName = Console.ReadLine();
 
-        foreach (Loan loan in loans)
+        List<Loan> userLoans = new List<Loan>();
+        bool loanExist = false;
+
+        foreach (Loan loan in library.GetLoans())
         {
-            if (loan.User.Name.ToLower().Contains(searchedUserName.ToLower()))
+            if (loan.User.Name.ToLower().Contains(searchedUserName.ToLower()) &&
+                loan.User.Surname.ToLower().Contains(searchedUserSurname.ToLower()) )
+
             {
-                if (loan.User.Surname.ToLower().Contains(searchedUserSurname.ToLower()))
-                {
-                    userFounded = true;
-                    userLoans.Add(loan);
-                }
-            }
-        }
-        if(userLoans.Count > 0)
-        {
-            Console.WriteLine($"Utente: {userLoans[0].User.Name} {userLoans[0].User.Surname}");
-            foreach (Loan loan in userLoans)
-            {
-                if(loan.Dvd != null)
+                if (loan.Dvd != null)
                 {
                     Console.WriteLine($"Dvd: {loan.Dvd.Title}");
+                    loanExist = true;
                 }
                 else
                 {
                     Console.WriteLine($"Libro: {loan.Book.Title}");
+                    loanExist = true;
                 }
                 Console.WriteLine($"Dal: {loan.LoanStart}");
                 Console.WriteLine($"al: {loan.LoanEnd}");
+                Console.WriteLine("------------------------------");
             }
-            return userLoans[0];
         }
-        else
+        if(!loanExist)
         {
             Console.WriteLine("L'utente non ha nessun prestito.");
-            Loan loan = new Loan();
-            return loan;
         }
+        Loan newLoan2 = new Loan();
+        return newLoan2;
     }
 }
 
@@ -311,7 +279,7 @@ User Login()
     bool userFounded = false;
     User chosenUser = null;
 
-    foreach (User user in users)
+    foreach (User user in library.GetUsers())
     {
         if (user.Password.ToLower().Contains(searchedPassword.ToLower()))
         {
@@ -354,8 +322,8 @@ void UserList(int productChoice, User user)
                 if (isUserBooking == 1)
                 {
                     chosenDvd.IsAvailable = false;
-                    loans.Add(new Loan(user, DateTime.Now.ToString(), DateTime.Now.AddDays(7).ToString()));
-                    loans[loans.Count - 1].Dvd = chosenDvd;
+                    library.LoanPush(new Loan(user, DateTime.Now.ToString(), DateTime.Now.AddDays(7).ToString()));
+                    library.GetLoans()[library.GetLoans().Count - 1].Dvd = chosenDvd;
 
                     Console.WriteLine($"la prenotazione del Dvd {chosenDvd.Title} è avvenuta con successo! Visualizzare la lista dei propri Dvd? Si(1) No(0)");
                     int toList = Convert.ToInt32(Console.ReadLine());
@@ -386,8 +354,8 @@ void UserList(int productChoice, User user)
                 if (isUserBooking == 1)
                 {
                     chosenBook.IsAvailable = false;
-                    loans.Add(new Loan(user, DateTime.Now.ToString(), DateTime.Now.AddDays(7).ToString()));
-                    loans[loans.Count - 1].Book = chosenBook;
+                    library.LoanPush(new Loan(user, DateTime.Now.ToString(), DateTime.Now.AddDays(7).ToString()));
+                    library.GetLoans()[library.GetLoans().Count - 1].Book = chosenBook;
 
                     Console.WriteLine($"la prenotazione del libro {chosenBook.Title} è avvenuta con successo! Visualizzare la lista dei propri libri? Si(1) No(0)");
                     int toList = Convert.ToInt32(Console.ReadLine());
@@ -407,7 +375,7 @@ void UserList(int productChoice, User user)
     }
     else
     {
-        Console.WriteLine($"Di cosa vuole mostrare le prenotazioni? Dvd(0) Libri(1)");
+        Console.WriteLine("Di cosa vuole mostrare le prenotazioni? Dvd(0) Libri(1)");
         int searchType = Convert.ToInt32(Console.ReadLine());
 
         if(searchType == 0)
@@ -425,7 +393,7 @@ void GetLoans(User user, string testo)
 {
     Console.WriteLine($"Ecco la lista dei {testo} da lei prenotati: ");
     bool LoanExist = false;
-    foreach (Loan loan in loans)
+    foreach (Loan loan in library.GetLoans())
     {
         if (loan.User.Name == user.Name)
         {
@@ -434,6 +402,9 @@ void GetLoans(User user, string testo)
                 if (loan.Dvd != null)
                 {
                     Console.WriteLine(loan.Dvd.Title);
+                    Console.WriteLine($"Dal: {loan.LoanStart}");
+                    Console.WriteLine($"al: {loan.LoanEnd}");
+                    Console.WriteLine("------------------------------");
                     LoanExist = true;
                 }
             }
@@ -442,6 +413,9 @@ void GetLoans(User user, string testo)
                 if (loan.Book != null)
                 {
                     Console.WriteLine(loan.Book.Title);
+                    Console.WriteLine($"Dal: {loan.LoanStart}");
+                    Console.WriteLine($"al: {loan.LoanEnd}");
+                    Console.WriteLine("------------------------------");
                     LoanExist = true;
                 }
             }
