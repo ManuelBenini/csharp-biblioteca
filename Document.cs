@@ -7,10 +7,10 @@
     public string Sector { get; set; }
     public bool IsAvailable { get; set; }
     public string Shelf { get; set; }
-    public string Author { get; set; }
+    public Author Author { get; set; }
 
     //Constructor
-    public Document(int code, string title, int year, string sector, bool isAvailable, string shelf, string author)
+    public Document(int code, string title, int year, string sector, bool isAvailable, string shelf, Author author)
     {
         Code = code;
         Title = title;

@@ -72,7 +72,7 @@ Object Search(int productChoice)
     //RICERCA DVD
     if (productChoice == 0)
     {
-        Console.WriteLine("Effettuare la ricerca sul titolo(0) o sul codice?(1)");
+        Console.WriteLine("Effettuare la ricerca sul titolo(0), sul codice(1) o visualizzare tutti i Dvd?(2)");
         int searchParameter = Convert.ToInt32(Console.ReadLine());
 
         bool dvdFounded = false;
@@ -92,7 +92,7 @@ Object Search(int productChoice)
                 }
             }
         }
-        else
+        else if (searchParameter == 1)
         {
             Console.WriteLine("Inserire il codice del dvd");
             int searchedDvd = Convert.ToInt32(Console.ReadLine());
@@ -106,6 +106,20 @@ Object Search(int productChoice)
                 }
             }
         }
+        else
+        {
+            Console.WriteLine("Lista di tutti i Dvd: ");
+            Console.WriteLine("-----------------------");
+
+            foreach (Dvd dvd in library.GetDvds())
+            {
+                Console.WriteLine($"Titolo: {dvd.Title}");
+                Console.WriteLine($"Autore: {dvd.Author.Name} {dvd.Author.Surname}");
+                Console.WriteLine($"Disponibile: {(dvd.IsAvailable ? "Si" : "No")} ");
+                Console.WriteLine("-----------------------");
+            }
+            return null;
+        }
 
         
 
@@ -117,9 +131,9 @@ Object Search(int productChoice)
             Console.WriteLine($"Titolo: {chosenDvd.Title}");
             Console.WriteLine($"Anno di produzione: {chosenDvd.Year}");
             Console.WriteLine($"Genere: {chosenDvd.Sector}");
-            Console.WriteLine($"Disponibile: {chosenDvd.IsAvailable}");
+            Console.WriteLine($"Disponibile: {(chosenDvd.IsAvailable ? "Si" : "No")} ");
             Console.WriteLine($"Scaffale: {chosenDvd.Shelf}");
-            Console.WriteLine($"Autore: {chosenDvd.Author}");
+            Console.WriteLine($"Autore: {chosenDvd.Author.Name} {chosenDvd.Author.Surname}");
             Console.WriteLine($"Durata del dvd: {chosenDvd.Time}");
 
             return chosenDvd;
@@ -127,14 +141,14 @@ Object Search(int productChoice)
         else
         {
             Console.WriteLine("Dvd non trovato");
-            return chosenDvd;
+            return null;
         }
     }
     //RICERCA LIBRI
     else if(productChoice == 1)
     {
 
-        Console.WriteLine("Effettuare la ricerca sul titolo(0) o sul codice?(1)");
+        Console.WriteLine("Effettuare la ricerca sul titolo(0), sul codice(1) o visualizzare tutti i Libri?(2)");
         int searchParameter = Convert.ToInt32(Console.ReadLine());
 
         bool bookFounded = false;
@@ -154,7 +168,7 @@ Object Search(int productChoice)
                 }
             }
         }
-        else
+        else if(searchParameter == 1)
         {
             Console.WriteLine("Inserire il codice del libro");
             int searchedBook = Convert.ToInt32(Console.ReadLine());
@@ -168,6 +182,20 @@ Object Search(int productChoice)
                 }
             }
         }
+        else
+        {
+            Console.WriteLine("Lista di tutti i Libri: ");
+            Console.WriteLine("-----------------------");
+
+            foreach (Book book in library.GetBooks())
+            {
+                Console.WriteLine($"Titolo: {book.Title}");
+                Console.WriteLine($"Autore: {book.Author.Name} {book.Author.Surname}");
+                Console.WriteLine($"Disponibile: {(book.IsAvailable? "Si" : "No")} ");
+                Console.WriteLine("-----------------------");
+            }
+            return null;
+        }
 
         if (bookFounded)
         {
@@ -177,9 +205,9 @@ Object Search(int productChoice)
             Console.WriteLine($"Titolo: {chosenBook.Title}");
             Console.WriteLine($"Anno di produzione: {chosenBook.Year}");
             Console.WriteLine($"Genere: {chosenBook.Sector}");
-            Console.WriteLine($"Disponibile: {chosenBook.IsAvailable}");
+            Console.WriteLine($"Disponibile: {(chosenBook.IsAvailable ? "Si" : "No")}");
             Console.WriteLine($"Scaffale: {chosenBook.Shelf}");
-            Console.WriteLine($"Autore: {chosenBook.Author}");
+            Console.WriteLine($"Autore: {chosenBook.Author.Name} {chosenBook.Author.Surname}");
             Console.WriteLine($"Numero di pagine: {chosenBook.NumberOfPages}");
 
             return chosenBook;
@@ -187,7 +215,7 @@ Object Search(int productChoice)
         else
         {
             Console.WriteLine("Libro non trovato");
-            return chosenBook;
+            return null;
         }
     }
     //RICERCA PRENOTAZIONI

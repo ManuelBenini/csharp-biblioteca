@@ -25,17 +25,17 @@
     }
     public void StaticBookPush()
     {
-        books.Add(new Book(5534, "Lo Hobbit", 2019, "Fantasy", true, "AB", "J.R.R Tolkien", 540));
-        books.Add(new Book(2305, "Psicologo", 1980, "Drammatic", true, "CB", "Frank John", 230));
-        books.Add(new Book(2312, "Chthulu", 1970, "Fantasy", false, "CS", "Lovecraft", 999));
-        books.Add(new Book(4321, "Arthur", 2019, "Mitologia", false, "ERB", "Il Re", 250));
+        books.Add(new Book(5534, "Lo Hobbit", 2019, "Fantasy", true, "AB", new Author("J.R.R", "Tolkien"), 540));
+        books.Add(new Book(2305, "Psicologo", 1980, "Drammatic", true, "CB", new Author("Frank", "John"), 230));
+        books.Add(new Book(2312, "Chthulu", 1970, "Fantasy", false, "CS", new Author("Howard", "Lovecraft"), 999));
+        books.Add(new Book(4321, "Arthur", 2019, "Mitologia", false, "ERB", new Author("Il", "Re"), 250));
     }
     public void StaticDvdPush()
     {
-        dvds.Add(new Dvd(1234, "Do You Breath?", 2019, "Rock", true, "as", "Frank Conley", 20));
-        dvds.Add(new Dvd(5321, "Summer Vibes", 1980, "Lo-Fi", true, "CB", "Cinegar John", 60));
-        dvds.Add(new Dvd(6742, "Worms Carves Your Mind", 1970, "Metal", false, "CS", "Lovecraft", 50));
-        dvds.Add(new Dvd(1111, "Jordie", 2019, "Storytelling", false, "ERB", "De Andrè", 110));
+        dvds.Add(new Dvd(1234, "Do You Breath?", 2019, "Rock", true, "as", new Author("Frank", "Conley"), 20));
+        dvds.Add(new Dvd(5321, "Summer Vibes", 1980, "Lo-Fi", true, "CB", new Author("Cinegar", "John"), 60));
+        dvds.Add(new Dvd(6742, "Worms Carves Your Mind", 1970, "Metal", false, "CS", new Author("Loving", "Lovecraft"), 50));
+        dvds.Add(new Dvd(1111, "Jordie", 2019, "Storytelling", false, "ERB", new Author("De", "Andrè"), 110));
     }
     public void StaticLoanPush()
     {
